@@ -1,26 +1,176 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
+/* ─── FROSTBYTE Brand & Pixel Theme ───────────────────────────────────────── */
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-glacier-grey: #A5AFBD;
+  --color-frost-white: #DCE3EA;
+  --color-snow-white: #F5F7FA;
+  --color-arctic-slate: #53647B;
+  --color-midnight-ice: #171F2D;
+  --color-pale-ice: #C2E1E8;
+  --color-digital-magenta: #D65BFF;
+  --color-prismatic-blue: #6D9EFF;
+
+  --color-background: #171F2D;
+  --color-foreground: #F5F7FA;
+  --color-surface: #171F2D;
+  --color-surface-alt: #1C2536;
+
+  --font-pixel: var(--font-pixel), "Courier New", monospace;
+  --font-heading: var(--font-heading), monospace;
+  --font-sans: var(--font-sans), system-ui, -apple-system, sans-serif;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* ─── Base Styles ─────────────────────────────────────────────────────────── */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 5rem;
+  background-color: #171F2D;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
   }
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #171F2D;
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* ─── Pixel Art Rendering Utilities ───────────────────────────────────────── */
+.pixelated {
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+}
+
+/* Retro Pixel Border System */
+.pixel-panel {
+  background-color: #171F2D;
+  border: 2px solid #53647B;
+  box-shadow: 
+    3px 3px 0px rgba(0, 0, 0, 0.4),
+    inset 1px 1px 0px rgba(194, 225, 232, 0.15);
+}
+
+.pixel-panel-hover {
+  transition: all 0.15s ease-out;
+}
+
+.pixel-panel-hover:hover {
+  border-color: #6D9EFF;
+  box-shadow: 
+    4px 4px 0px rgba(109, 158, 255, 0.3),
+    inset 1px 1px 0px rgba(194, 225, 232, 0.25);
+  transform: translateY(-2px);
+}
+
+/* Pixel Buttons */
+.pixel-btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.25rem;
+  background-color: #6D9EFF;
+  color: #0D1117;
+  font-weight: 700;
+  border: 2px solid #DCE3EA;
+  box-shadow: 3px 3px 0px #0D1117;
+  transition: all 0.1s ease-out;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.pixel-btn-primary:hover {
+  background-color: #8bb4ff;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #0D1117;
+}
+
+.pixel-btn-primary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #0D1117;
+}
+
+.pixel-btn-secondary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-pixel);
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  padding: 0.75rem 1.25rem;
+  background-color: #171F2D;
+  color: #DCE3EA;
+  border: 2px solid #53647B;
+  box-shadow: 3px 3px 0px #0D1117;
+  transition: all 0.1s ease-out;
+  cursor: pointer;
+  text-transform: uppercase;
+}
+
+.pixel-btn-secondary:hover {
+  border-color: #C2E1E8;
+  color: #F5F7FA;
+  transform: translate(-1px, -1px);
+  box-shadow: 4px 4px 0px #0D1117;
+}
+
+.pixel-btn-secondary:active {
+  transform: translate(2px, 2px);
+  box-shadow: 1px 1px 0px #0D1117;
+}
+
+/* Pixel Badge */
+.pixel-badge {
+  font-family: var(--font-pixel);
+  font-size: 0.65rem;
+  padding: 0.35rem 0.65rem;
+  background-color: #1C2536;
+  border: 1px solid #53647B;
+  box-shadow: 2px 2px 0px rgba(0, 0, 0, 0.4);
+}
+
+/* Retro Scanline Overlay (Optional Subtle) */
+.pixel-divider {
+  height: 4px;
+  background: repeating-linear-gradient(
+    to right,
+    #6D9EFF 0,
+    #6D9EFF 6px,
+    transparent 6px,
+    transparent 12px
+  );
+}
+
+/* ─── Scrollbar ───────────────────────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #171F2D;
+  border-left: 1px solid #53647B;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #53647B;
+  border: 2px solid #171F2D;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #6D9EFF;
 }
