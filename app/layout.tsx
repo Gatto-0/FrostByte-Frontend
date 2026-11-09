@@ -24,6 +24,7 @@ const geistSans = Geist({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL('https://frostbyte.tech'),
   title: 'Frostbyte',
   description:
     'Frostbyte is a 24-hour winter student hackathon in Delhi, India. An immersive retro pixel-art technology adventure bringing developers, designers and innovators together.',
@@ -38,6 +39,11 @@ export const metadata: Metadata = {
     'technology',
     'innovation',
   ],
+  icons: {
+    icon: '/logo/frostbyte_p5_transparent.png',
+    shortcut: '/logo/frostbyte_p5_transparent.png',
+    apple: '/logo/frostbyte_p5_transparent.png',
+  },
   openGraph: {
     title: 'Frostbyte',
     description:
@@ -45,12 +51,21 @@ export const metadata: Metadata = {
     type: 'website',
     locale: 'en_IN',
     siteName: 'Frostbyte',
+    images: [
+      {
+        url: '/logo/frostbyte_p5_transparent.png',
+        width: 1400,
+        height: 1296,
+        alt: 'FROSTBYTE Emblem',
+      },
+    ],
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Frostbyte',
     description:
       'A 24-hour winter student hackathon in Delhi, India.',
+    images: ['/logo/frostbyte_p5_transparent.png'],
   },
   robots: {
     index: true,

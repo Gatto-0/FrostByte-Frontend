@@ -1,8 +1,9 @@
 'use client';
 
 import { type Variants, motion } from 'framer-motion';
-import { Clock, Calendar, MapPin, Navigation, ChevronDown, Compass } from 'lucide-react';
+import { Clock, Calendar, MapPin, Navigation, ChevronDown } from 'lucide-react';
 import { eventMeta } from '@/lib/constants';
+import FrostbyteLogo from '@/components/FrostbyteLogo';
 
 const fadeUp: Variants = {
   hidden: { opacity: 0, y: 18 },
@@ -31,13 +32,25 @@ export default function Hero() {
         animate="visible"
         className="relative z-20 flex flex-col items-center max-w-4xl mx-auto"
       >
-        {/* Retro Game Quest Badge */}
+        {/* Prominent FROSTBYTE Hero Emblem */}
         <motion.div
           custom={0}
           variants={fadeUp}
-          className="mb-6 inline-flex items-center gap-2.5 px-3 py-1.5 bg-[#171F2D]/90 border border-[#53647B] shadow-[2px_2px_0_#0D1117] backdrop-blur-sm"
+          className="mb-5 sm:mb-7 flex justify-center"
         >
-          <Compass size={14} className="text-[#6D9EFF]" />
+          <FrostbyteLogo
+            variant="hero"
+            glow
+            hoverGlow
+          />
+        </motion.div>
+
+        {/* Retro Game Quest Badge */}
+        <motion.div
+          custom={0.5}
+          variants={fadeUp}
+          className="mb-6 inline-flex items-center gap-2.5 px-3.5 py-1.5 bg-[#171F2D]/90 border border-[#53647B] shadow-[2px_2px_0_#0D1117] backdrop-blur-sm"
+        >
           <span className="font-pixel text-[10px] sm:text-xs text-[#C2E1E8] tracking-widest uppercase">
             Quest 2025 // Winter Edition
           </span>
@@ -50,7 +63,7 @@ export default function Hero() {
           variants={fadeUp}
           className="font-pixel text-4xl sm:text-6xl md:text-7xl lg:text-8xl tracking-tight text-[#F5F7FA] drop-shadow-[0_4px_0_#0D1117]"
         >
-          {/* {eventMeta.name} */}
+          {eventMeta.name}
         </motion.h1>
 
         {/* Tagline */}

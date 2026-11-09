@@ -3,6 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'motion/react';
 import LightCurtainBackground from '@/components/LightCurtainBackground';
+import FrostbyteLogo from '@/components/FrostbyteLogo';
 import './frostbyte-scenery.css';
 
 /**
@@ -307,6 +308,12 @@ export default function FrostbyteScenery() {
           style={{ y: titleY, opacity: titleOpacity }}
           aria-hidden="true"
         >
+          {/* <div className="mb-3 sm:mb-4">
+            <FrostbyteLogo
+              variant="scenery"
+              glow
+            />
+          </div> */}
           <h1 className="scenery-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl">
             FROSTBYTE
           </h1>

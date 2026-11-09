@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Terminal, Sparkles } from 'lucide-react';
 import { eventMeta } from '@/lib/constants';
+import FrostbyteLogo from '@/components/FrostbyteLogo';
 
 export default function RegistrationCTA() {
   return (
@@ -20,6 +21,14 @@ export default function RegistrationCTA() {
           <div className="absolute top-2 right-2 w-2 h-2 bg-[#6D9EFF]" />
           <div className="absolute bottom-2 left-2 w-2 h-2 bg-[#6D9EFF]" />
           <div className="absolute bottom-2 right-2 w-2 h-2 bg-[#6D9EFF]" />
+
+          {/* Official Frostbyte Emblem */}
+          <div className="flex justify-center mb-6">
+            <FrostbyteLogo
+              variant="cta"
+              glow
+            />
+          </div>
 
           <div className="inline-flex items-center gap-2 mb-4">
             <Sparkles size={14} className="text-[#D65BFF]" />
