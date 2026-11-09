@@ -3,6 +3,7 @@ import {
   contactEmail,
   eventMeta,
 } from '@/lib/constants';
+import FrostbyteLogo from '@/components/FrostbyteLogo';
 
 function XTwitterIcon({ className }: { className?: string }) {
   return (
@@ -52,7 +53,11 @@ export default function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Column 1 — Brand */}
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-3.5">
+              <FrostbyteLogo
+                variant="footer"
+                glow
+              />
               <span className="font-pixel text-xl sm:text-2xl text-[#F5F7FA]">
                 {eventMeta.name}
               </span>

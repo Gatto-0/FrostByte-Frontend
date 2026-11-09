@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Shield, Award } from 'lucide-react';
 import { sponsorTiers, contactEmail } from '@/lib/constants';
+import FrostbyteLogo from '@/components/FrostbyteLogo';
 
 const sizeClasses: Record<string, string> = {
   lg: 'w-60 h-28 sm:w-72 sm:h-32',
@@ -84,6 +85,7 @@ export default function Sponsors() {
           transition={{ duration: 0.4, delay: 0.2 }}
         >
           <div className="pixel-panel inline-flex flex-col sm:flex-row items-center gap-4 p-5 sm:px-8 bg-[#171F2D]/95">
+            <FrostbyteLogo variant="badge" className="w-10 h-10 sm:w-11 sm:h-11" hoverGlow />
             <span className="font-sans text-sm text-[#DCE3EA]">
               Looking to support student innovation and recruit top tier engineering talent?
             </span>

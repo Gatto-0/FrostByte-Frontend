@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Menu, X, Terminal } from 'lucide-react';
+import { Menu, X } from 'lucide-react';
 import { navLinks, eventMeta } from '@/lib/constants';
+import FrostbyteLogo from '@/components/FrostbyteLogo';
 
 export default function Navbar() {
   const [navState, setNavState] = useState<'initial' | 'hidden' | 'content'>('initial');
@@ -47,18 +48,19 @@ export default function Navbar() {
       }`}
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="flex h-16 items-center justify-between">
-          {/* FROSTBYTE Pixel Wordmark */}
+        <div className="flex h-16 sm:h-20 items-center justify-between">
+          {/* FROSTBYTE Pixel Wordmark & Prominent Brand Logo */}
           <a
             href="#hero"
-            className="flex items-center gap-2.5 group"
+            className="flex items-center gap-3 sm:gap-3.5 group py-1"
             aria-label="FROSTBYTE Hackathon home"
           >
-            <div className="w-7 h-7 bg-[#6D9EFF] border border-[#DCE3EA] flex items-center justify-center shadow-[2px_2px_0_#0D1117] group-hover:translate-x-0.5 group-hover:translate-y-0.5 group-hover:shadow-[1px_1px_0_#0D1117] transition-all">
-              <Terminal size={14} className="text-[#0D1117] stroke-[3]" />
-            </div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-pixel text-sm sm:text-base tracking-wider text-[#F5F7FA] group-hover:text-[#6D9EFF] transition-colors">
+            <FrostbyteLogo
+              variant="nav"
+              hoverGlow
+            />
+            <div className="flex items-center gap-2">
+              <span className="font-pixel text-base sm:text-lg tracking-wider text-[#F5F7FA] group-hover:text-[#6D9EFF] transition-colors">
                 {eventMeta.name}
               </span>
               <span className="inline-block w-2 h-2 bg-[#D65BFF] animate-pulse shadow-[1px_1px_0_#0D1117]" />
@@ -109,7 +111,16 @@ export default function Navbar() {
             transition={{ duration: 0.15, ease: 'easeInOut' }}
             className="overflow-hidden border-b-2 border-[#53647B] bg-[#171F2D] shadow-[0_6px_0_rgba(0,0,0,0.5)] md:hidden"
           >
-            <nav className="flex flex-col gap-1.5 p-4 border-t border-[#53647B]/40" aria-label="Mobile navigation">
+            <div className="flex items-center gap-3 px-4 py-3 border-t border-b border-[#53647B]/40 bg-[#141A26]">
+              <FrostbyteLogo variant="badge" className="w-8 h-8" />
+              <div className="flex items-center gap-1.5">
+                <span className="font-pixel text-sm text-[#F5F7FA] tracking-wider">
+                  {eventMeta.name}
+                </span>
+                <span className="inline-block w-1.5 h-1.5 bg-[#D65BFF] animate-pulse" />
+              </div>
+            </div>
+            <nav className="flex flex-col gap-1.5 p-4" aria-label="Mobile navigation">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
