@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'motion/react';
+import LightCurtainBackground from '@/components/LightCurtainBackground';
 import './frostbyte-scenery.css';
 
 /**
@@ -262,6 +263,12 @@ export default function FrostbyteScenery() {
           />
           {!reducedMotion && <StarTwinkleCanvas />}
         </motion.div>
+
+        {/* Aurora: above the opaque sky and beneath every scenery subject. */}
+        <LightCurtainBackground
+          className="absolute inset-x-0 top-0 z-[1] h-[55%] pointer-events-none"
+          pointerTargetId="hero"
+        />
 
         {/* ── Layer 2: Distant Forest (z-index: 2, 7% movement) ────────────── */}
         <motion.div
