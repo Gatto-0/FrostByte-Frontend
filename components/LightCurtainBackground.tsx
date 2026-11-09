@@ -4,37 +4,32 @@ import { useEffect, useRef } from 'react';
 import { initLightCurtain } from '@/lib/lightCurtain';
 
 interface LightCurtainBackgroundProps {
-  className: string;
-  pointerTargetId?: string;
+  className?: string;
+  style?: React.CSSProperties;
 }
 
 /**
- * Client-only sky layer for the WebGL light curtain. Pointer movement is
- * tracked against the complete hero while the canvas remains decorative.
+ * Client-only wrapper for the WebGL light curtain. The canvas remains
+ * decorative so foreground controls stay readable and interactive.
  */
 export default function LightCurtainBackground({
   className,
-  pointerTargetId,
-}: LightCurtainBackgroundProps) {
+  style,
+}: LightCurtainBackgroundProps = {}) {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const container = containerRef.current;
     if (!container) return;
 
-    const pointerTarget = pointerTargetId
-      ? document.getElementById(pointerTargetId)
-      : null;
-
-    return initLightCurtain(container, {
-      pointerTarget: pointerTarget ?? undefined,
-    });
-  }, [pointerTargetId]);
+    return initLightCurtain(container);
+  }, []);
 
   return (
     <div
       ref={containerRef}
-      className={className}
+      className={className ?? "absolute -top-[18%] inset-x-0 bottom-0 z-[2] pointer-events-none"}
+      style={{ top: '-18%', ...style }}
       aria-hidden="true"
     />
   );

@@ -246,6 +246,9 @@ export default function FrostbyteScenery() {
       role="presentation"
     >
       <div className="scenery-container">
+        {/* Interactive WebGL curtain between the sky and the scenery foreground. */}
+        <LightCurtainBackground />
+
         {/* ── Layer 1: Far Sky (z-index: 1, 2% movement) ───────────────────── */}
         <motion.div
           className="scenery-layer scenery-layer-sky"
@@ -263,12 +266,6 @@ export default function FrostbyteScenery() {
           />
           {!reducedMotion && <StarTwinkleCanvas />}
         </motion.div>
-
-        {/* Aurora: above the opaque sky and beneath every scenery subject. */}
-        <LightCurtainBackground
-          className="absolute inset-x-0 top-0 z-[1] h-[55%] pointer-events-none"
-          pointerTargetId="hero"
-        />
 
         {/* ── Layer 2: Distant Forest (z-index: 2, 7% movement) ────────────── */}
         <motion.div
