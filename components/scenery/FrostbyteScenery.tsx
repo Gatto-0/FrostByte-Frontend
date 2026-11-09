@@ -2,6 +2,7 @@
 
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'motion/react';
+import LightCurtainBackground from '@/components/LightCurtainBackground';
 import FrostbyteLogo from '@/components/FrostbyteLogo';
 import './frostbyte-scenery.css';
 
@@ -246,6 +247,9 @@ export default function FrostbyteScenery() {
       role="presentation"
     >
       <div className="scenery-container">
+        {/* Interactive WebGL curtain between the sky and the scenery foreground. */}
+        <LightCurtainBackground />
+
         {/* ── Layer 1: Far Sky (z-index: 1, 2% movement) ───────────────────── */}
         <motion.div
           className="scenery-layer scenery-layer-sky"
