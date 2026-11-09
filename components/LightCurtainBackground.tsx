@@ -29,7 +29,7 @@ export default function LightCurtainBackground({
     <div
       ref={containerRef}
       className={className ?? "absolute -top-[18%] inset-x-0 bottom-0 z-[2] pointer-events-none"}
-      style={{ top: '-18%', ...style }}
+      style={{ top: '-2%', ...style }}
       aria-hidden="true"
     />
   );
