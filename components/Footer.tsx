@@ -48,7 +48,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative z-20 bg-[#171F2D]/85 backdrop-blur-sm border-t-2 border-[#53647B]">
+    <footer className="relative z-20 bg-[#171F2D]/85 backdrop-blur-sm border-t-2 border-[#53647B] pb-[max(1.5rem,env(safe-area-inset-bottom))]">
       <div className="mx-auto max-w-6xl px-4 sm:px-6 py-12 md:py-16">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
           {/* Column 1 — Brand */}
@@ -74,7 +74,7 @@ export default function Footer() {
                     key={item.platform}
                     href={item.href}
                     aria-label={item.platform}
-                    className="p-2.5 bg-[#1C2536] border border-[#53647B] text-[#A5AFBD] hover:text-[#F5F7FA] hover:border-[#6D9EFF] shadow-[2px_2px_0_#0D1117] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
+                    className="min-w-[44px] min-h-[44px] p-2.5 flex items-center justify-center bg-[#1C2536] border border-[#53647B] text-[#A5AFBD] hover:text-[#F5F7FA] hover:border-[#6D9EFF] shadow-[2px_2px_0_#0D1117] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all touch-manipulation"
                   >
                     <Icon className="w-4 h-4" />
                   </a>
@@ -88,12 +88,12 @@ export default function Footer() {
             <h3 className="font-pixel text-[11px] text-[#C2E1E8] tracking-widest uppercase mb-4">
               [NAV_INDEX]
             </h3>
-            <ul className="space-y-2">
+            <ul className="space-y-1">
               {navLinks.map((link) => (
                 <li key={link.label}>
                   <a
                     href={link.href}
-                    className="font-pixel text-[10px] text-[#A5AFBD] hover:text-[#6D9EFF] uppercase tracking-wider transition-colors inline-block"
+                    className="font-pixel text-[10px] text-[#A5AFBD] hover:text-[#6D9EFF] uppercase tracking-wider transition-colors inline-flex items-center min-h-[44px] py-2 touch-manipulation"
                   >
                     &gt; {link.label}
                   </a>

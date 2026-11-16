@@ -14,7 +14,7 @@ export default function RegistrationCTA() {
           whileInView={{ opacity: 1, scale: 1 }}
           viewport={{ once: true, amount: 0.2 }}
           transition={{ duration: 0.4 }}
-          className="pixel-panel p-8 sm:p-12 text-center bg-[#171F2D]/95 border-2 border-[#6D9EFF] shadow-[6px_6px_0_#0D1117] relative overflow-hidden"
+          className="pixel-panel p-6 sm:p-12 text-center bg-[#171F2D]/95 border-2 border-[#6D9EFF] shadow-[6px_6px_0_#0D1117] relative overflow-hidden"
         >
           {/* Subtle Corner Accents */}
           <div className="absolute top-2 left-2 w-2 h-2 bg-[#6D9EFF]" />
@@ -37,7 +37,7 @@ export default function RegistrationCTA() {
             </span>
           </div>
 
-          <h2 className="font-pixel text-2xl sm:text-3xl md:text-4xl text-[#F5F7FA] tracking-tight leading-snug">
+          <h2 className="font-pixel text-xl sm:text-3xl md:text-4xl text-[#F5F7FA] tracking-tight leading-snug">
             Ready to Build Beyond the Ordinary?
           </h2>
 

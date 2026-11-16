@@ -59,6 +59,10 @@
   /* background: linear-gradient(90deg, #6D9EFF, #D65BFF); */
 }
 
+.scenery-layer-title-mobile {
+  display: none;
+}
+
 .scenery-title {
   font-family: var(--font-pixel, monospace);
   font-weight: 700;
@@ -122,6 +126,10 @@
   z-index: 2;
 }
 
+.scenery-layer-title-desktop {
+  z-index: 4;
+}
+
 .scenery-layer-campfire {
   z-index: 4; /* Sits naturally on the campsite ground beside the boy */
   height: 100%;
@@ -147,11 +155,22 @@
   display: block;
   width: 100%;
   height: 100%;
+  background-image: url('/scenery/campfire-sprite.png');
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  background-size: 1000% 100%;
   image-rendering: pixelated;
   image-rendering: -moz-crisp-edges;
   image-rendering: crisp-edges;
   user-select: none;
   pointer-events: none;
+  animation: campfire-frames 1.17s steps(9, end) infinite;
+}
+
+@keyframes campfire-frames {
+  to {
+    background-position: 100% 0;
+  }
 }
 
 /* Campfire Warm Glow (Restrained & localized around the flames) */
@@ -188,6 +207,10 @@
   }
 }
 
+.scenery-effects-paused .pause-when-hero-hidden {
+  animation-play-state: paused !important;
+}
+
 /* Star Twinkle */
 .star-twinkle-canvas {
   position: absolute;
@@ -207,5 +230,139 @@
   .campfire-glow {
     animation: none;
     opacity: 0.8;
+  }
+}
+
+/* ─── Desktop title font size (restores Tailwind classes removed from TSX) ── */
+/* mirrors: text-6xl sm, text-7xl md, text-8xl lg */
+.scenery-title {
+  font-size: 3.75rem; /* text-6xl base */
+}
+@media (min-width: 640px) {
+  .scenery-title { font-size: 3.75rem; } /* sm: text-6xl */
+}
+@media (min-width: 768px) {
+  .scenery-title { font-size: 4.5rem; } /* md: text-7xl */
+}
+@media (min-width: 1024px) {
+  .scenery-title { font-size: 6rem; } /* lg: text-8xl */
+}
+
+/* ─── MOBILE HERO (portrait phones & small tablets ≤ 768px) ─────────────── */
+@media (max-width: 768px) {
+
+  /* 1. Dynamic viewport height — avoids address-bar jump on iOS/Android */
+  .scenery-viewport {
+    height: 100vh; /* fallback */
+    height: 100dvh;
+    /* Keep position: fixed and overflow: hidden from base rules */
+  }
+
+  /* 2. Mobile scene container
+     ─────────────────────────────────────────────────────────────────────────
+     The desktop container is 2752×1536 and was flex-centered inside the
+     viewport. On mobile we switch to a 1678×937 coordinate space (the
+     native campsite image dimensions) so all percentage positions stay
+     accurate.
+
+     Campfire center in this space: 48.5% from left.
+     To visually center the campfire at 50vw:
+       translateX(-48.5%) moves 48.5% of the element's OWN width left,
+       which is exactly where the campfire center is.
+     Combined with left: 50%, the campfire lands at the viewport midpoint.
+
+     Height: use max() so the scene always fills the full viewport height,
+     even on tall-and-narrow portrait phones, while keeping the 1678/937
+     aspect ratio intact (never stretching).
+  */
+  .scenery-container {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    /* A 1.5x zoom crops the boy/log and igloo out of the mobile clearing. */
+    width: max(150vw, calc(150dvh * 1678 / 937));
+    height: max(150dvh, calc(150vw * 937 / 1678));
+    aspect-ratio: 1678 / 937;
+    transform: translate(-48.5%, -50%);
+    /* Override the flex-shrink: 0 from base, not needed with abs positioning */
+    flex-shrink: unset;
+  }
+
+  /* 3. Title — viewport-centered (lives outside scenery-container as a sibling)
+     ─────────────────────────────────────────────────────────────────────────
+     Because the title is a direct child of .scenery-viewport (not inside
+     .scenery-container), it is NOT affected by the container's translateX pan.
+     Its top/left/width are relative to the fixed viewport.
+  */
+  .scenery-layer-title {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 55%;
+    /* Reset desktop centering; center via flex */
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding-top: clamp(3.5rem, 10vh, 5.5rem);
+    padding-left: 0;
+    padding-right: 0;
+    /* Must sit above scenery-container layers */
+    z-index: 10;
+    pointer-events: none;
+  }
+
+  .scenery-layer-title-desktop {
+    display: none;
+  }
+
+  .scenery-layer-title-mobile {
+    display: flex;
+  }
+
+  /* 4. Title text: fit "FROSTBYTE" on one line at 360px with breathing room
+     letter-spacing: 0.12em adds trailing space → compensate with padding-left
+  */
+  .scenery-title {
+    font-size: clamp(1.5rem, 8.5vw, 2.75rem);
+    /* Optical centering: letter-spacing shifts visual center right by ~half of
+       total trailing space. padding-left = letter-spacing to push center back. */
+    padding-left: 0.12em;
+    text-align: center;
+    width: 100%;
+  }
+
+  /* 5. Scroll hint: slightly smaller and centered */
+  .scenery-scroll-hint {
+    font-size: 8px;
+    text-align: center;
+    letter-spacing: 0.2em;
+    padding-left: 0.2em; /* match optical centering with letter-spacing */
+  }
+
+  /* 6. Foreground terrain: recalibrate top offset for the enlarged container
+     Desktop: top = 550 / 1536 ≈ 35.8% of container height
+     Mobile container height = 937px → 35.8% × 937 ≈ 336px → same 35.8%
+     Ratio is identical, so no change needed. The base rule still applies:
+       top: calc(100% * 550 / 1536) → 35.8% — correct for both spaces.
+     No override required here.
+  */
+
+  /* 7. Enlarge the campfire over the open clearing on mobile. */
+  .campfire-wrapper {
+    width: 14%;
+    left: 41.5%;
+    top: 57%;
+  }
+
+  .campfire-glow {
+    filter: blur(6px);
+  }
+
+  /* 8. Prevent the star-twinkle canvas from forcing excess width */
+  .star-twinkle-canvas {
+    width: 100%;
+    height: 50%;
   }
 }

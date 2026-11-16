@@ -45,6 +45,12 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
+}
+
+html[data-tab-visible='false'] .pause-when-tab-hidden {
+  animation-play-state: paused !important;
 }
 
 /* ─── Pixel Art Rendering Utilities ───────────────────────────────────────── */
@@ -84,6 +90,8 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   padding: 0.75rem 1.25rem;
+  min-height: 44px;
+  touch-action: manipulation;
   background-color: #6D9EFF;
   color: #0D1117;
   font-weight: 700;
@@ -113,6 +121,8 @@ body {
   font-size: 0.75rem;
   letter-spacing: 0.05em;
   padding: 0.75rem 1.25rem;
+  min-height: 44px;
+  touch-action: manipulation;
   background-color: #171F2D;
   color: #DCE3EA;
   border: 2px solid #53647B;

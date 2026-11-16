@@ -7,21 +7,13 @@ import { navLinks, eventMeta } from '@/lib/constants';
 import FrostbyteLogo from '@/components/FrostbyteLogo';
 
 export default function Navbar() {
-  const [navState, setNavState] = useState<'initial' | 'hidden' | 'content'>('initial');
+  const [navState, setNavState] = useState<'initial' | 'content'>('initial');
   const [mobileOpen, setMobileOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
-      // Scenery transition covers ~225vh
-      const transitionEnd = window.innerHeight * 2.15;
-      if (y < 40) {
-        setNavState('initial');
-      } else if (y < transitionEnd) {
-        setNavState('hidden');
-      } else {
-        setNavState('content');
-      }
+      setNavState(y < 40 ? 'initial' : 'content');
     };
 
     onScroll();
@@ -33,17 +25,38 @@ export default function Navbar() {
     };
   }, []);
 
+  // Lock body scroll when mobile menu is open
+  useEffect(() => {
+    if (mobileOpen) {
+      const originalOverflow = document.body.style.overflow;
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.style.overflow = originalOverflow;
+      };
+    }
+  }, [mobileOpen]);
+
+  // Keyboard accessibility: Close mobile menu on Escape key
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && mobileOpen) {
+        setMobileOpen(false);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [mobileOpen]);
+
   const closeMobile = () => setMobileOpen(false);
 
   return (
     <header
       style={{
-        transform: navState === 'hidden' ? 'translateY(-100%)' : 'translateY(0)',
-        transition: 'transform 0.35s cubic-bezier(0.16, 1, 0.3, 1), background-color 0.25s, border-color 0.25s',
+        transition: 'background-color 0.25s, border-color 0.25s',
       }}
-      className={`fixed top-0 left-0 right-0 z-50 ${
-        navState === 'content'
-          ? 'bg-[#171F2D]/90 backdrop-blur-md border-b-2 border-[#53647B] shadow-[0_4px_0_rgba(0,0,0,0.4)]'
+      className={`fixed top-0 left-0 right-0 z-50 pt-[env(safe-area-inset-top)] ${
+        navState === 'content' || mobileOpen
+          ? 'bg-[#171F2D]/95 backdrop-blur-md border-b-2 border-[#53647B] shadow-[0_4px_0_rgba(0,0,0,0.4)]'
           : 'bg-transparent border-b-2 border-transparent'
       }`}
     >
@@ -52,7 +65,7 @@ export default function Navbar() {
           {/* FROSTBYTE Pixel Wordmark & Prominent Brand Logo */}
           <a
             href="#hero"
-            className="flex items-center gap-3 sm:gap-3.5 group py-1"
+            className="flex items-center gap-3 sm:gap-3.5 group py-1 min-h-[44px]"
             aria-label="FROSTBYTE Hackathon home"
           >
             <FrostbyteLogo
@@ -63,7 +76,7 @@ export default function Navbar() {
               <span className="font-pixel text-base sm:text-lg tracking-wider text-[#F5F7FA] group-hover:text-[#6D9EFF] transition-colors">
                 {eventMeta.name}
               </span>
-              <span className="inline-block w-2 h-2 bg-[#D65BFF] animate-pulse shadow-[1px_1px_0_#0D1117]" />
+              <span className="inline-block w-2 h-2 bg-[#D65BFF] animate-pulse pause-when-tab-hidden shadow-[1px_1px_0_#0D1117]" />
             </div>
           </a>
 
@@ -88,15 +101,15 @@ export default function Navbar() {
             </div>
           </nav>
 
-          {/* Mobile hamburger button */}
+          {/* Mobile hamburger button with at least 44x44px touch area */}
           <button
             type="button"
-            className="inline-flex items-center justify-center p-2 bg-[#171F2D] border-2 border-[#53647B] text-[#DCE3EA] hover:border-[#6D9EFF] md:hidden shadow-[2px_2px_0_#0D1117] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all"
+            className="inline-flex items-center justify-center min-w-[44px] min-h-[44px] p-2.5 bg-[#171F2D] border-2 border-[#53647B] text-[#DCE3EA] hover:border-[#6D9EFF] md:hidden shadow-[2px_2px_0_#0D1117] active:translate-x-0.5 active:translate-y-0.5 active:shadow-none transition-all touch-manipulation"
             onClick={() => setMobileOpen((prev) => !prev)}
             aria-label={mobileOpen ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={mobileOpen}
           >
-            {mobileOpen ? <X size={18} /> : <Menu size={18} />}
+            {mobileOpen ? <X size={20} /> : <Menu size={20} />}
           </button>
         </div>
       </div>
@@ -108,8 +121,8 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: 'auto', opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            transition={{ duration: 0.15, ease: 'easeInOut' }}
-            className="overflow-hidden border-b-2 border-[#53647B] bg-[#171F2D] shadow-[0_6px_0_rgba(0,0,0,0.5)] md:hidden"
+            transition={{ duration: 0.2, ease: 'easeInOut' }}
+            className="overflow-hidden border-b-2 border-[#53647B] bg-[#171F2D] shadow-[0_6px_0_rgba(0,0,0,0.5)] md:hidden max-h-[calc(100dvh-4.5rem)] overflow-y-auto"
           >
             <div className="flex items-center gap-3 px-4 py-3 border-t border-b border-[#53647B]/40 bg-[#141A26]">
               <FrostbyteLogo variant="badge" className="w-8 h-8" />
@@ -117,26 +130,26 @@ export default function Navbar() {
                 <span className="font-pixel text-sm text-[#F5F7FA] tracking-wider">
                   {eventMeta.name}
                 </span>
-                <span className="inline-block w-1.5 h-1.5 bg-[#D65BFF] animate-pulse" />
+                <span className="inline-block w-1.5 h-1.5 bg-[#D65BFF] animate-pulse pause-when-tab-hidden" />
               </div>
             </div>
-            <nav className="flex flex-col gap-1.5 p-4" aria-label="Mobile navigation">
+            <nav className="flex flex-col gap-2 p-4" aria-label="Mobile navigation">
               {navLinks.map((link) => (
                 <a
                   key={link.href}
                   href={link.href}
                   onClick={closeMobile}
-                  className="font-pixel text-xs tracking-wider text-[#DCE3EA] hover:bg-[#1C2536] hover:text-[#6D9EFF] border border-transparent hover:border-[#53647B] p-2.5 transition-colors uppercase flex items-center justify-between"
+                  className="font-pixel text-xs tracking-wider text-[#DCE3EA] hover:bg-[#1C2536] hover:text-[#6D9EFF] border border-transparent hover:border-[#53647B] min-h-[44px] px-3.5 py-2.5 transition-colors uppercase flex items-center justify-between touch-manipulation"
                 >
                   <span>{link.label}</span>
-                  <span className="text-[#6D9EFF] opacity-50">&gt;</span>
+                  <span className="text-[#6D9EFF] opacity-75 font-bold">&gt;</span>
                 </a>
               ))}
               <div className="pt-3 mt-1 border-t border-[#53647B]">
                 <a
                   href={eventMeta.registrationUrl}
                   onClick={closeMobile}
-                  className="pixel-btn-primary w-full text-center"
+                  className="pixel-btn-primary w-full min-h-[44px] text-center"
                 >
                   Register Now
                 </a>

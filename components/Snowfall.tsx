@@ -2,6 +2,7 @@
 
 import { useRef, useEffect, useCallback } from 'react';
 import { useScroll, useVelocity, useSpring, useReducedMotion } from 'motion/react';
+import { useEffectVisibility } from '@/components/EffectVisibilityProvider';
 
 interface PixelSnow {
   x: number;
@@ -18,7 +19,12 @@ export default function Snowfall() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const particlesRef = useRef<PixelSnow[]>([]);
   const animFrameRef = useRef<number>(0);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const elapsedRef = useRef(0);
+  const lastFrameRef = useRef(0);
+  const frameIntervalRef = useRef(0);
   const reducedMotion = useReducedMotion();
+  const { tabVisible } = useEffectVisibility();
 
   // Scroll velocity tracking via Motion
   const { scrollY } = useScroll();
@@ -31,9 +37,9 @@ export default function Snowfall() {
   });
 
   const createParticles = useCallback((width: number, height: number): PixelSnow[] => {
-    // Atmospheric particle density: ~140 particles on desktop, ~55 on mobile for clarity
+    // Atmospheric particle density: ~140 particles on desktop, ~35 on mobile.
     const isMobile = width < 768;
-    const count = isMobile ? 55 : 140;
+    const count = isMobile ? 35 : 140;
     const particles: PixelSnow[] = [];
 
     for (let i = 0; i < count; i++) {
@@ -68,21 +74,36 @@ export default function Snowfall() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
+    contextRef.current = ctx;
+
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
+      frameIntervalRef.current = canvas.width < 768 ? 1000 / 30 : 0;
       particlesRef.current = createParticles(canvas.width, canvas.height);
     };
 
     resize();
     window.addEventListener('resize', resize);
 
-    let elapsed = 0;
+    return () => {
+      window.removeEventListener('resize', resize);
+      contextRef.current = null;
+    };
+  }, [createParticles, reducedMotion]);
 
-    const animate = () => {
-      if (!ctx || !canvas) return;
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    const ctx = contextRef.current;
+    if (!tabVisible || reducedMotion || !canvas || !ctx) return;
+
+    const animate = (timestamp: number) => {
+      animFrameRef.current = requestAnimationFrame(animate);
+      if (timestamp - lastFrameRef.current < frameIntervalRef.current) return;
+      lastFrameRef.current = timestamp;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
-      elapsed += 0.016;
+      elapsedRef.current += 0.016;
 
       // Read current smoothed velocity from MotionValue without triggering React re-renders
       const currentVel = Math.abs(smoothVelocity.get());
@@ -102,7 +123,7 @@ export default function Snowfall() {
         const p = particles[i];
 
         // Idle drift oscillates gently with slight rightward bias
-        const idleDrift = Math.sin(elapsed * 1.5 + p.phase) * p.baseDrift * 0.4 + 0.25;
+        const idleDrift = Math.sin(elapsedRef.current * 1.5 + p.phase) * p.baseDrift * 0.4 + 0.25;
 
         // Total instantaneous velocities
         const vx = idleDrift + windSpeedX;
@@ -155,16 +176,14 @@ export default function Snowfall() {
         }
       }
 
-      animFrameRef.current = requestAnimationFrame(animate);
     };
 
     animFrameRef.current = requestAnimationFrame(animate);
 
     return () => {
       cancelAnimationFrame(animFrameRef.current);
-      window.removeEventListener('resize', resize);
     };
-  }, [createParticles, reducedMotion, smoothVelocity]);
+  }, [reducedMotion, smoothVelocity, tabVisible]);
 
   return (
     <canvas

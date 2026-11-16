@@ -8,39 +8,42 @@ import Sponsors from '@/components/Sponsors';
 import RegistrationCTA from '@/components/RegistrationCTA';
 import FAQ from '@/components/FAQ';
 import Footer from '@/components/Footer';
+import { EffectVisibilityProvider } from '@/components/EffectVisibilityProvider';
 
 export default function Home() {
   return (
-    <>
-      {/* 4-Layer Pixel Art Parallax Scenery with Integrated FROSTBYTE Title */}
-      <FrostbyteScenery />
+    <EffectVisibilityProvider>
+      <>
+        {/* 4-Layer Pixel Art Parallax Scenery with Integrated FROSTBYTE Title */}
+        <FrostbyteScenery />
 
-      {/* Atmospheric Pixel Snowfall & Scroll-Velocity Wind Overlay */}
-      <Snowfall />
+        {/* Atmospheric Pixel Snowfall & Scroll-Velocity Wind Overlay */}
+        <Snowfall />
 
-      {/* Retro Navigation (Hides on scroll during transition, reappears for content) */}
-      <Navbar />
+        {/* Retro Navigation (Hides on scroll during transition, reappears for content) */}
+        <Navbar />
 
-      {/* 1. Opening Scenery Sequence Scroll Stage (~225vh duration) */}
-      {/* Pure cinematic opening campsite sequence before website content begins */}
-      <div
-        id="hero"
-        className="h-[225vh] w-full pointer-events-none"
-        aria-label="FROSTBYTE Opening Experience"
-      />
+        {/* 1. Opening Scenery Sequence Scroll Stage (~225vh duration) */}
+        {/* Pure cinematic opening campsite sequence before website content begins */}
+        <div
+          id="hero"
+          className="h-[225vh] w-full pointer-events-none"
+          aria-label="FROSTBYTE Opening Experience"
+        />
 
-      {/* Main Website Sections (Beginning after the scenery sequence finishes) */}
-      <main className="relative z-20 flex-1">
-        <About />
-        <EventFormat />
-        <Tracks />
-        <Sponsors />
-        <RegistrationCTA />
-        <FAQ />
-      </main>
+        {/* Main Website Sections (Beginning after the scenery sequence finishes) */}
+        <main className="relative z-20 flex-1">
+          <About />
+          <EventFormat />
+          <Tracks />
+          <Sponsors />
+          <RegistrationCTA />
+          <FAQ />
+        </main>
 
-      {/* Retro Footer */}
-      <Footer />
-    </>
+        {/* Retro Footer */}
+        <Footer />
+      </>
+    </EffectVisibilityProvider>
   );
 }

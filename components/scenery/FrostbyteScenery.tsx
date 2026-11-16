@@ -3,7 +3,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'motion/react';
 import LightCurtainBackground from '@/components/LightCurtainBackground';
-import FrostbyteLogo from '@/components/FrostbyteLogo';
+import { useEffectVisibility } from '@/components/EffectVisibilityProvider';
 import './frostbyte-scenery.css';
 
 /**
@@ -13,7 +13,11 @@ import './frostbyte-scenery.css';
  * Layer 3 (MAIN CAMPSITE):     /scenery/campsite-clean.png   (z-index: 3, 16% parallax)
  * TITLE LAYER (FROSTBYTE):     Integrated HTML Title         (z-index: 3, 16% parallax locked with campsite)
  * Layer 4 (FOREGROUND TERRAIN):/scenery/foreground-clean.png (z-index: 4, 38-45% parallax, 1086x1448 extended height)
- * Layer 5 (CAMPFIRE):          /scenery/campfire-clean.png   (temporarily disabled)
+ * Layer 5 (CAMPFIRE):          /scenes/Pixel-Art_Campfire_Flicker_Animation.gif
+ *
+ * MOBILE NOTES (≤768px):
+ * - The mobile campsite is zoomed and panned to frame the open clearing
+ * - The title sits OUTSIDE scenery-container so it stays viewport-centered
  */
 export const SCENERY_LAYERS = {
   farSky: {
@@ -29,7 +33,7 @@ export const SCENERY_LAYERS = {
   mainCampsite: {
     src: '/scenery/campsite-clean.png',
     alt: 'FROSTBYTE Main Campsite — Winter adventurer, snow igloo, lantern and clearing',
-    zIndex: 4,
+    zIndex: 3,
   },
   foregroundTerrain: {
     src: '/scenery/foreground-clean.png',
@@ -37,7 +41,7 @@ export const SCENERY_LAYERS = {
     zIndex: 5,
   },
   campfire: {
-    src: '/scenes/Pixel-Art_Campfire_Flicker_Animation.gif',
+    src: '/scenery/campfire-sprite.png',
     alt: 'FROSTBYTE Campfire — Glowing animated pixel-art campfire and logs at the campsite',
     zIndex: 4,
   },
@@ -50,8 +54,8 @@ interface CampfireLayerProps {
 
 /**
  * Dedicated Animated Campfire Layer component.
- * Positioned beside the adventurer, anchored in the campsite coordinate space,
- * and scrolls 1:1 with campsiteY behind the rising foreground terrain.
+ * Anchored in the campsite coordinate space and scrolls 1:1 with campsiteY
+ * behind the rising foreground terrain.
  */
 export function CampfireLayer({ yTransform, reducedMotion }: CampfireLayerProps) {
   return (
@@ -61,15 +65,11 @@ export function CampfireLayer({ yTransform, reducedMotion }: CampfireLayerProps)
       aria-hidden="true"
     >
       <div className="campfire-wrapper">
-        <div className="campfire-glow" />
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img
-          src={SCENERY_LAYERS.campfire.src}
-          alt={SCENERY_LAYERS.campfire.alt}
-          className="campfire-gif"
-          loading="eager"
-          decoding="async"
-          draggable={false}
+        <div className="campfire-glow pause-when-tab-hidden pause-when-hero-hidden" />
+        <div
+          className="campfire-gif pause-when-tab-hidden pause-when-hero-hidden"
+          role="img"
+          aria-label={SCENERY_LAYERS.campfire.alt}
         />
       </div>
     </motion.div>
@@ -81,19 +81,31 @@ export function CampfireLayer({ yTransform, reducedMotion }: CampfireLayerProps)
  */
 function StarTwinkleCanvas() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
+  const contextRef = useRef<CanvasRenderingContext2D | null>(null);
+  const starsRef = useRef<Array<{
+    x: number;
+    y: number;
+    size: number;
+    baseAlpha: number;
+    speed: number;
+    phase: number;
+  }>>([]);
+  const timeRef = useRef(0);
+  const { heroVisible, tabVisible } = useEffectVisibility();
 
   useEffect(() => {
+    if (window.matchMedia('(max-width: 768px)').matches) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
     const ctx = canvas.getContext('2d');
     if (!ctx) return;
 
-    let animId: number;
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight * 0.5);
 
-    const stars = Array.from({ length: 30 }, () => ({
+    starsRef.current = Array.from({ length: 30 }, () => ({
       x: Math.random() * width,
       y: Math.random() * height,
       size: Math.random() > 0.8 ? 2 : 1,
@@ -102,21 +114,7 @@ function StarTwinkleCanvas() {
       phase: Math.random() * Math.PI * 2,
     }));
 
-    let t = 0;
-    const render = () => {
-      ctx.clearRect(0, 0, width, height);
-      t += 0.04;
-
-      for (const s of stars) {
-        const alpha = s.baseAlpha + Math.sin(t * s.speed + s.phase) * 0.2;
-        ctx.fillStyle = `rgba(194, 225, 232, ${Math.max(0.1, alpha)})`;
-        ctx.fillRect(Math.floor(s.x), Math.floor(s.y), s.size, s.size);
-      }
-
-      animId = requestAnimationFrame(render);
-    };
-
-    render();
+    contextRef.current = ctx;
 
     const onResize = () => {
       if (!canvas) return;
@@ -126,10 +124,35 @@ function StarTwinkleCanvas() {
 
     window.addEventListener('resize', onResize);
     return () => {
-      cancelAnimationFrame(animId);
       window.removeEventListener('resize', onResize);
+      contextRef.current = null;
     };
   }, []);
+
+  useEffect(() => {
+    const ctx = contextRef.current;
+    if (!heroVisible || !tabVisible || !ctx) return;
+
+    let animId = 0;
+    const render = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      timeRef.current += 0.04;
+
+      for (const star of starsRef.current) {
+        const alpha = star.baseAlpha + Math.sin(timeRef.current * star.speed + star.phase) * 0.2;
+        ctx.fillStyle = `rgba(194, 225, 232, ${Math.max(0.1, alpha)})`;
+        ctx.fillRect(Math.floor(star.x), Math.floor(star.y), star.size, star.size);
+      }
+
+      animId = requestAnimationFrame(render);
+    };
+
+    render();
+    return () => cancelAnimationFrame(animId);
+  }, [heroVisible, tabVisible]);
 
   return <canvas ref={canvasRef} className="star-twinkle-canvas" aria-hidden="true" />;
 }
@@ -154,6 +177,7 @@ function interpolateSegment(val: number, keys: number[], values: number[]): numb
 
 export default function FrostbyteScenery() {
   const reducedMotion = useReducedMotion();
+  const { heroVisible } = useEffectVisibility();
   const { scrollY } = useScroll();
 
   // Track responsive viewport height for proportional travel calculations
@@ -242,13 +266,42 @@ export default function FrostbyteScenery() {
 
   return (
     <aside
-      className="scenery-viewport"
+      className={`scenery-viewport${heroVisible ? '' : ' scenery-effects-paused'}`}
       aria-label="FROSTBYTE Interactive Winter Scenery"
       role="presentation"
     >
+      {/*
+       * FROSTBYTE Title Layer — lives on the viewport, NOT inside scenery-container.
+       * This ensures the title stays horizontally centered on mobile even when
+       * the container is panned left to center the campfire.
+       */}
+      <motion.div
+        className="scenery-layer scenery-layer-title scenery-layer-title-mobile"
+        style={{ y: titleY, opacity: titleOpacity }}
+        aria-hidden="true"
+      >
+        <h1 className="scenery-title">
+          FROSTBYTE
+        </h1>
+        <div className="scenery-scroll-hint animate-pulse pause-when-tab-hidden pause-when-hero-hidden">
+          [SCROLL TO EXPLORE]
+        </div>
+      </motion.div>
+
       <div className="scenery-container">
         {/* Interactive WebGL curtain between the sky and the scenery foreground. */}
         <LightCurtainBackground />
+
+        <motion.div
+          className="scenery-layer scenery-layer-title scenery-layer-title-desktop"
+          style={{ y: titleY, opacity: titleOpacity }}
+          aria-hidden="true"
+        >
+          <h1 className="scenery-title">FROSTBYTE</h1>
+          <div className="scenery-scroll-hint animate-pulse pause-when-tab-hidden pause-when-hero-hidden">
+            [SCROLL TO EXPLORE]
+          </div>
+        </motion.div>
 
         {/* ── Layer 1: Far Sky (z-index: 1, 2% movement) ───────────────────── */}
         <motion.div
@@ -291,6 +344,7 @@ export default function FrostbyteScenery() {
           style={{ y: campsiteY }}
           aria-hidden="true"
         >
+          {/* Original campsite; mobile CSS zooms into the open clearing. */}
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={SCENERY_LAYERS.mainCampsite.src}
@@ -300,26 +354,6 @@ export default function FrostbyteScenery() {
             decoding="async"
             draggable={false}
           />
-        </motion.div>
-
-        {/* ── FROSTBYTE Title Layer (Dedicated independent scrollspeed) ── */}
-        <motion.div
-          className="scenery-layer scenery-layer-title"
-          style={{ y: titleY, opacity: titleOpacity }}
-          aria-hidden="true"
-        >
-          {/* <div className="mb-3 sm:mb-4">
-            <FrostbyteLogo
-              variant="scenery"
-              glow
-            />
-          </div> */}
-          <h1 className="scenery-title text-4xl sm:text-6xl md:text-7xl lg:text-8xl">
-            FROSTBYTE
-          </h1>
-          <div className="scenery-scroll-hint animate-pulse">
-            [SCROLL TO EXPLORE]
-          </div>
         </motion.div>
 
         {/* ── Layer 5: Campfire (Integrated animated campfire beside the boy) ── */}

@@ -29,7 +29,7 @@ export default function Sponsors() {
             </span>
           </div>
 
-          <h2 className="font-pixel text-2xl sm:text-3xl md:text-4xl text-[#F5F7FA] tracking-tight">
+          <h2 className="font-pixel text-xl sm:text-3xl md:text-4xl text-[#F5F7FA] tracking-tight">
             Sponsors &amp; Guild Partners
           </h2>
 
@@ -84,14 +84,14 @@ export default function Sponsors() {
           viewport={{ once: true, margin: '-60px' }}
           transition={{ duration: 0.4, delay: 0.2 }}
         >
-          <div className="pixel-panel inline-flex flex-col sm:flex-row items-center gap-4 p-5 sm:px-8 bg-[#171F2D]/95">
+          <div className="pixel-panel inline-flex flex-col sm:flex-row items-center gap-4 p-5 sm:px-8 bg-[#171F2D]/95 w-full sm:w-auto">
             <FrostbyteLogo variant="badge" className="w-10 h-10 sm:w-11 sm:h-11" hoverGlow />
             <span className="font-sans text-sm text-[#DCE3EA]">
               Looking to support student innovation and recruit top tier engineering talent?
             </span>
             <a
               href={`mailto:${contactEmail}`}
-              className="pixel-btn-primary shrink-0"
+              className="pixel-btn-primary w-full sm:w-auto shrink-0"
             >
               Sponsor FROSTBYTE &rarr;
             </a>

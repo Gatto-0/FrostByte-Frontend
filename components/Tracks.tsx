@@ -39,7 +39,7 @@ export default function Tracks() {
             </span>
           </div>
 
-          <h2 className="font-pixel text-2xl sm:text-3xl md:text-4xl text-[#F5F7FA] tracking-tight">
+          <h2 className="font-pixel text-xl sm:text-3xl md:text-4xl text-[#F5F7FA] tracking-tight">
             Tracks &amp; Challenges
           </h2>
 
