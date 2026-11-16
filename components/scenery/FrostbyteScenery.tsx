@@ -3,7 +3,10 @@
 import React, { useRef, useEffect, useState } from 'react';
 import { motion, useScroll, useTransform, useReducedMotion, type MotionValue } from 'motion/react';
 import LightCurtainBackground from '@/components/LightCurtainBackground';
+<<<<<<< HEAD
 import { useEffectVisibility } from '@/components/EffectVisibilityProvider';
+=======
+>>>>>>> 88c07fbd6fcd98780c07bf8675680040313b0e7b
 import './frostbyte-scenery.css';
 
 /**

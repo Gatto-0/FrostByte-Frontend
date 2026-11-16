@@ -11,6 +11,11 @@ export default function SiteLoaderCover() {
         suppressHydrationWarning
         dangerouslySetInnerHTML={{ __html: LOADER_HTML }}
       />
+      <script
+        dangerouslySetInnerHTML={{
+          __html: "if(typeof window!=='undefined'){window.__loaderStartTime=performance.now();}",
+        }}
+      />
       <noscript>
         <style>{"#site-loader{display:none}"}</style>
       </noscript>
